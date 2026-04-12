@@ -1,0 +1,58 @@
+Meshtastic Dashboard Chat Summary
+Date: 2026-04-11
+Workspace: RPI 4B programing
+
+What we implemented
+
+1) Dashboard and routing stability
+- Cleaned up and stabilized the dashboard flow and layout behavior.
+- Ensured serving paths were working for dashboard assets and feeds.
+
+2) Message pipeline (serial + MQTT)
+- Combined decoded text messages from serial and MQTT into one feed.
+- Added deduplication so matching messages from both sources appear once.
+- Improved normalization/cleanup for better duplicate detection.
+- Added filtering to remove short/noisy status messages.
+
+3) Node naming and display
+- Added node-name enrichment from NODEINFO data.
+- Updated decoded message display to show readable node names when available.
+- Updated node table/map behavior to use names where possible (fallback to node ID).
+
+4) UI/UX and map improvements
+- Applied dark-theme visual enhancements and refined panel styling.
+- Improved map marker popups with richer node details.
+- Fixed right-panel height/scroll behavior so layout stays aligned and readable.
+
+5) Earthquake integration (USGS + local events)
+- Added USGS earthquake feed script using official API:
+  https://earthquake.usgs.gov/fdsnws/event/1/
+- Added cron job to refresh USGS feed every 5 minutes.
+- Added USGS earthquake panel and map markers.
+- Added 100-mile boundary circle on map.
+- Kept local heuristic/sensor events on map and panel using different colors.
+- Renamed local panel to: Local Earthquake Sensor Omron D7S.
+
+6) Distance from your node
+- Distances now calculated from your primary node position (!ef13ee56) from nodes.json.
+- USGS panel heading shows center origin, and list entries emphasize distance.
+
+7) Fixes applied during integration
+- Fixed USGS panel 404 by changing dashboard fetch path to root /usgs_quakes.json.
+- Resolved duplicate JS insertion side effect and revalidated output.
+
+Operational behavior now
+- Decoded feed: merged + deduplicated + filtered.
+- Node naming: long names where available.
+- USGS feed: refreshed by cron every 5 minutes.
+- Map: shows mesh nodes, USGS quake markers, local heuristic event markers, and 100-mile circle.
+
+Key deployed scripts/files (on node)
+- /home/oden/bin/build_decoded_messages.py
+- /home/oden/bin/build_mqtt_nodes_json.py
+- /home/oden/bin/fetch_usgs_quakes.py
+- /var/www/html/mesh/index.html
+- /var/www/html/mesh/decoded_messages_recent.json
+- /var/www/html/mesh/mqtt_nodes_recent.json
+- /var/www/html/mesh/usgs_quakes.json
+
