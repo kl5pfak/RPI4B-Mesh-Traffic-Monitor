@@ -1,6 +1,6 @@
 Meshtastic Dashboard Chat Summary
 Date: 2026-04-11
-Workspace: RPI 4B programing
+Workspace: RPI 4B programming
 
 What we implemented
 
