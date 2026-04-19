@@ -2,6 +2,10 @@
 
 This workspace provides a lightweight gateway + verifier pipeline for Meshtastic packet intake, DeskQuake trigger detection, online verification, and screen-friendly monitoring.
 
+## Version History
+
+- See CHANGELOG.md for release and beta update notes.
+
 ## Project Layout
 
 - `src/meshtastic_gateway.py`
