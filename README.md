@@ -10,6 +10,7 @@ This workspace provides a lightweight gateway + verifier pipeline for Meshtastic
   - Detects DeskQuake triggers
   - Writes event queue
   - Sends outgoing verification status messages
+  - Sends emergency alerts for verified high-confidence events
 - `src/quake_verifier.py`
   - Polls event queue
   - Checks online source
@@ -20,6 +21,8 @@ This workspace provides a lightweight gateway + verifier pipeline for Meshtastic
   - Event queue from gateway to verifier
 - `data/verified_queue.jsonl`
   - Verification queue from verifier back to gateway/monitor
+- `data/alerts_queue.jsonl`
+  - Emergency alerts emitted by gateway
 
 ## Quick Start
 
@@ -41,6 +44,15 @@ python src/quake_verifier.py --poll-interval 2
 
 ```bash
 python src/meshtastic_gateway.py --serial-port /dev/ttyACM0
+```
+
+Enable emergency alert output over mesh:
+
+```bash
+python src/meshtastic_gateway.py \
+  --serial-port /dev/ttyACM0 \
+  --enable-emergency-alerts \
+  --alert-confidence-threshold 0.75
 ```
 
 4. Run secondary monitor (third terminal):
@@ -84,6 +96,15 @@ Examples that trigger DeskQuake event detection:
 - Queues are JSONL files so each service can run independently.
 - For production, consider replacing file queues with Redis, MQTT, or SQLite.
 - Run on Raspberry Pi with proper serial permissions (e.g. user in `dialout` group).
+
+## Emergency Alert Behavior (Beta)
+
+- Gateway always emits verification status lines for each verification record.
+- With `--enable-emergency-alerts`, gateway also emits:
+  - `EMERGENCY ALERT: DeskQuake event <event_id> verified (...)`
+- Alerts are emitted only for verified events that pass the confidence threshold.
+- Each event is alert-sent once per gateway process runtime.
+- Alert payloads are persisted to `data/alerts_queue.jsonl` for local monitoring/auditing.
 
 ## Dashboard Integration Notes
 

@@ -4,7 +4,7 @@ import argparse
 import time
 from typing import Any, Dict
 
-from common import EVENTS_QUEUE, VERIFIED_QUEUE, ensure_runtime_paths, read_new_jsonl
+from common import ALERTS_QUEUE, EVENTS_QUEUE, VERIFIED_QUEUE, ensure_runtime_paths, read_new_jsonl
 
 
 def render_row(record: Dict[str, Any]) -> str:
@@ -20,6 +20,7 @@ def run(args: argparse.Namespace) -> int:
     ensure_runtime_paths()
     events_offset = 0
     verified_offset = 0
+    alerts_offset = 0
 
     print("[monitor] watching queues", flush=True)
     print("event_id          verified   source                 confidence verified_at", flush=True)
@@ -29,6 +30,7 @@ def run(args: argparse.Namespace) -> int:
         try:
             events, events_offset = read_new_jsonl(EVENTS_QUEUE, events_offset)
             verified, verified_offset = read_new_jsonl(VERIFIED_QUEUE, verified_offset)
+            alerts, alerts_offset = read_new_jsonl(ALERTS_QUEUE, alerts_offset)
 
             for event in events:
                 if "_invalid" in event:
@@ -39,6 +41,14 @@ def run(args: argparse.Namespace) -> int:
                 if "_invalid" in result:
                     continue
                 print(render_row(result), flush=True)
+
+            for alert in alerts:
+                if "_invalid" in alert:
+                    continue
+                print(
+                    f"[alert] {alert.get('alert_id')} level={alert.get('alert_level')} event={alert.get('event_id')} msg={alert.get('message')}",
+                    flush=True,
+                )
 
             if not args.watch:
                 break

@@ -11,6 +11,7 @@ DATA_DIR = ROOT / "data"
 LOG_DIR = ROOT / "logs"
 EVENTS_QUEUE = DATA_DIR / "events_queue.jsonl"
 VERIFIED_QUEUE = DATA_DIR / "verified_queue.jsonl"
+ALERTS_QUEUE = DATA_DIR / "alerts_queue.jsonl"
 
 
 def ensure_runtime_paths() -> None:
@@ -18,6 +19,7 @@ def ensure_runtime_paths() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     EVENTS_QUEUE.touch(exist_ok=True)
     VERIFIED_QUEUE.touch(exist_ok=True)
+    ALERTS_QUEUE.touch(exist_ok=True)
 
 
 def utc_now_iso() -> str:
